@@ -1,88 +1,66 @@
 """Recognize growth patterns with tiny, countable examples; no timing."""
 
+"""Optional English-first starter; one recognition-level app across three days."""
 
-def first_record(records):
-    """Return the first record directly, or None for empty input."""
-    if not records:
-        return None
-    return records[0]
+from Catalog_data import BOOKS, validate_book_ids
 
-
-def scan_lookup(records, queries):
-    """Find the first match for each query and count inspected records."""
-    results, inspected = [], 0
-    for query in queries:
-        found = None
-        for record in records:
-            inspected += 1
-            if record["id"] == query:
-                found = record
-                break
-        results.append(found)
-    return results, inspected
+# MONDAY - Implement equivalent lookups after Monday's instruction.
 
 
-def indexed_lookup(records, queries):
-    """Build an ID index and return ordered answers plus setup/query counts."""
-    index = {}
-    for record in records:
-        index[record["id"]] = record
-    results = []
-    for query in queries:
-        if query in index:
-            results.append(index[query])
-        else:
-            results.append(None)
-    return results, len(records), len(queries)
+def scan_lookup(records, book_id):
+    """Return the first matching book, or None when absent."""
+    # Look at one record at a time, in its original order.
+    # Compare its ID with the requested ID.
+    # Return the record immediately when it matches.
+    # Return None if you reach the end without a match.
+    # Do not change the input records.
+    raise NotImplementedError("Implement the first-match scan.")
 
 
-def halving_trace(size):
-    """Show repeated rounded-up halving for logarithmic growth intuition."""
-    trace = []
-    while size > 1:
-        trace.append(size)
-        size = (size + 1) // 2
-    return trace + [size]
+def build_index(records):
+    """Map each previously validated catalog ID to its book record."""
+    # Begin with an empty dictionary.
+    # Visit each book once; use its ID as the key and its record as the value.
+    # Return the completed index without changing the original records.
+    # Use the supplied ID precheck before building; do not resolve duplicates.
+    raise NotImplementedError("Build the catalog ID index.")
 
 
-def make_records(size):
-    """Create unique synthetic ID records using an explicit loop."""
-    records = []
-    for value in range(size):
-        records.append({"id": value})
-    return records
-
-
-def run_demo(record_builder=make_records, lookup=indexed_lookup):
-    """Illustrate growth shapes with small inputs rather than benchmark them."""
-    print("GROWTH RECOGNITION: small equipment lookup examples")
-    sample = record_builder(4)
-    print("First equipment ID:", first_record(sample)["id"])
-    print("Direct first-item access: O(1), regardless of collection size.")
-    for size in (4, 8):
-        _, count = scan_lookup(record_builder(size), [-1])
-        print(f"One missing-ID scan through {size} records: {count} inspections -> O(n)")
-    print("\nRepeated lookup: n queries through n records")
-    print("Every query misses: count each inspected record, index entry, and query.")
-    print(f"{'n':>6} {'q':>6} {'scan inspections':>18} {'index entries':>15} {'indexed queries':>17}")
-    for size in (4, 8, 16):
-        rows = record_builder(size)
-        queries = [-1] * size
-        scan, inspections = scan_lookup(rows, queries)
-        indexed, builds, lookups = lookup(rows, queries)
-        if not (scan == indexed):
-            raise ValueError("Cannot compare methods that return different results.")
-        print(f"{size:>6} {size:>6} {inspections:>18} {builds:>15} {lookups:>17}")
-    print("\nScan work is O(q*n); here q=n, so it grows quadratically.")
-    print("Index construction is O(n); queries are expected average-case O(q).")
-    print("An indexed query is an API-operation count, not a CPU instruction count.")
-    print("Halving contrast:", halving_trace(32), "-> logarithmic number of reductions")
-    print("Recognize the shape: direct access, one pass, repeated passes, or halving.")
+def indexed_lookup(index, book_id):
+    """Return the indexed book or None when the catalog ID is absent."""
+    # Check whether the requested ID is a dictionary key.
+    # Return the associated book when present; otherwise return None.
+    # Do not rebuild the dictionary here.
+    raise NotImplementedError("Query the existing index.")
 
 
 def main():
-    """Run the explicit-loop version of the growth demonstration."""
-    run_demo()
+    """Show the examples for the lookup functions you have completed."""
+    # Begin a fresh shared project; do not choose either partner's AL01 code.
+    # Use the supplied BOOKS list and validate its catalog IDs.
+    # Build an index once; try first, last, and missing IDs.
+    # Compare both lookup answers and show ID, title, author, or a not-found message.
+    # Replace this message when the Monday functions are ready.
+    print("AL02 starter: begin with the Monday section.")
+
+
+# TUESDAY - Recognize growth; wait for Tuesday's instruction.
+# Inspect first_id, all_ids, ordered_pairs, and halving_sizes in growth_examples.py.
+# Ask whether each examines one item, visits every item, visits every pair,
+# or repeatedly reduces the remaining size.
+# Give each a Big-O label and one brief reason in your README.
+# Explain how a first-match scan differs from a last-match or absent-ID scan.
+# Finish focused tests for empty input, repeated queries, order, and unchanged data.
+# No counter function, timer, benchmark runner, or experiment report is needed.
+
+# THURSDAY - Choose qualitatively and submit after Thursday's instruction.
+# Consider a patron's one first-book request when the catalog list is available.
+# Contrast it with a circulation desk's repeated IDs when an index can be reused.
+# Explain construction and extra storage, not a measured speed winner.
+# Add brief choices, learning, contribution, and assistance notes to the README.
+# Copy the full app, data, growth examples, tests, and imported support modules
+# into your own class repository; test the copy and submit your own URL.
+# Keep this same main.py all week; no artificial extra feature or report.
 
 
 if __name__ == "__main__":
