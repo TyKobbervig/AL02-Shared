@@ -12,6 +12,7 @@ Reason: Returns the first record directly without scanning the catalog.
 
 all_ids
 Big-0: O(n)
+
 Reason: Visits each record once to collect all IDs.
 
 
