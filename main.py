@@ -1,88 +1,50 @@
-def first_record(records):
-    """Return the first record directly, or None for empty input."""
-    if not records:
-        return None
-    return records[0]
+from catalog_data import BOOKS, validate_book_ids
 
 
-def scan_lookup(records, queries):
-    """Find the first match for each query and count inspected records."""
-    results = []
-    inspected = 0
-
-    for query in queries:
-        found = None
-
-        for record in records:
-            inspected += 1
-
-            if record["id"] == query:
-                found = record
-                break
-
-        results.append(found)
-
-    return results, inspected
+def scan_lookup(records, book_id):
+    for book in records:
+        if book["id"] == book_id:
+            return book
+    return None
 
 
-def indexed_lookup(records, queries):
-    """Build an ID index and return ordered answers plus setup/query counts."""
+def build_index(records):
     index = {}
 
-    for record in records:
-        index[record["id"]] = record
+    for book in records:
+        index[book["id"]] = book
 
-    results = []
-
-    for query in queries:
-        if query in index:
-            results.append(index[query])
-        else:
-            results.append(None)
-
-    return results, len(records), len(queries)
+    return index
 
 
-def halving_trace(size):
-    """Show repeated rounded-up halving."""
-    trace = []
-
-    while size > 1:
-        trace.append(size)
-        size = (size + 1) // 2
-
-    return trace + [size]
+def indexed_lookup(index, book_id):
+    return index.get(book_id)
 
 
-def make_records(size):
-    """Create synthetic records with unique IDs."""
-    records = []
-
-    for value in range(size):
-        records.append({"id": value})
-
-    return records
-
-
-def run_demo():
-    print("First record:")
-    print(first_record(make_records(4)))
-
-    print("\nHalving trace:")
-    print(halving_trace(16))
-
-    rows = make_records(4)
-    queries = [0, 3, -1]
-
-    print("\nScan lookup:")
-    print(scan_lookup(rows, queries))
-
-    print("\nIndexed lookup:")
-    print(indexed_lookup(rows, queries))
+def display_book(book):
+    if book is None:
+        print("Book not found.")
+    else:
+        print(
+            f"ID: {book['id']}, "
+            f"Title: {book['title']}, "
+            f"Author: {book['author']}"
+        )
 
 
 def main():
-    run_demo()
+    validate_book_ids(BOOKS)
+
+    index = build_index(BOOKS)
+
+    print("Scan Lookup for B1:")
+    display_book(scan_lookup(BOOKS, "B1"))
+
+    print("\nIndexed Lookup for B4:")
+    display_book(indexed_lookup(index, "B4"))
+
+    print("\nLookup for B99:")
+    display_book(scan_lookup(BOOKS, "B99"))
 
 
 if __name__ == "__main__":
