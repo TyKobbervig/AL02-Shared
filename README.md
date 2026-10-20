@@ -39,6 +39,8 @@ $ Tuesday Tasks: $
 
 3. Explain why a request for B1 stops sooner than a request for B4 or an absent ID in this catalog order. Connect that observation to best/worst cases.
 
+    B1 is at the top of the catalog, and our functions naturally draw from the beginning of said catalog. 
+
 4. Finish focused tests for repeated requests, retained request order, unchanged records, and rejection of duplicate IDs by the supplied precheck.
 
 5. Run the application and tests, correct mismatches, and commit progress.
