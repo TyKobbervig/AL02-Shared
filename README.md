@@ -44,3 +44,19 @@ $ Tuesday Tasks: $
 4. Finish focused tests for repeated requests, retained request order, unchanged records, and rejection of duplicate IDs by the supplied precheck.
 
 5. Run the application and tests, correct mismatches, and commit progress.
+
+6. ## Best-Case and Worst-Case Behavior
+
+A request for **B1** stops sooner because B1 is the first record in the catalog. The search finds the match immediately and returns without checking any other records.
+
+A request for **B4** requires examining several records before finding a match. An absent ID requires checking every record before determining that the book is not present.
+
+- **Best case:** The requested ID is the first record (B1), so the search stops immediately.
+- **Worst case:** The requested ID is the last record (B4) or is not in the catalog, so every record must be checked.
+- **Average case:** The requested ID is somewhere in the middle, so only some of the records are examined before a match is found.
+
+## Test Coverage
+
+The tests verify:
+
+- Repeated requests return
