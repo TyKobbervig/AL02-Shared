@@ -4,8 +4,6 @@ Worst-case scan lookup: O(n) because the algorithm may need to examine every boo
 Index construction: O(n) because each book record must be processed once to build the dictionary.
 One lookup in an existing index: O(1) average case because a dictionary can directly access a record by its ID without scanning the entire catalog.
 
-Reason: Visits each record once to collect all IDs.
-
 $ Monday Tasks: $
 
 6. Briefly identify worst-case scan growth, index-build growth, and the expected average-case growth of one lookup in an existing index.
@@ -29,15 +27,15 @@ $ Tuesday Tasks: $
 
     First ID: O(1) constant
     Reason: Returns the first record directly without scanning the catalog.
-    
+
     All IDs: O(n) linear
-    Reason: 
+    Reason: Visits each record once to collect all IDs. 
 
     Ordered Pairs: O(n^2) quadratic
-    Reason: 
+    Reason: Uses nested loops to create ordered pairs.
 
-    Halving Sizes:
-    Reason: 
+    Halving Sizes: O(log n)
+    Reason: Repeatedly halves at every step.
 
 3. Explain why a request for B1 stops sooner than a request for B4 or an absent ID in this catalog order. Connect that observation to best/worst cases.
 
