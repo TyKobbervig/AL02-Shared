@@ -6,10 +6,12 @@ One lookup in an existing index: O(1) average case because a dictionary can dire
 
 Growth Pattern Observations
 First_id
-Big-): 0(1)
+Big-0: 0(1)
+
 Reason: Returns the first record directly without scanning the catalog.
+
 all_ids
-Big-0L O(n)
+Big-0: O(n)
 Reason: Visits each record once to collect all IDs.
 
 
