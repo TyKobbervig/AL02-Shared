@@ -1,6 +1,6 @@
 """Regression checks, separate from the classroom application."""
 
-from main import (
+from main2 import (
     halving_trace,
     indexed_lookup,
     scan_lookup,
