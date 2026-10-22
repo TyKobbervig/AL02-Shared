@@ -5,19 +5,19 @@ The code behaves identically; the extra text is a reading aid that names the
 growth shape of each function using Big-O notation, both letters and
 description:
 
-    O(1)     - "O of 1"         (Constant; best case of a first-match scan)
-    O(n)     - "O of n"         (Linear; worst case of a first-match scan)
+    O(1)     - "O of 1"         (Constant; average existing-index lookup)
+    O(n)     - "O of n"         (Linear; index build or one scan pass)
     O(n^2)   - "O of n squared" (Quadratic; repeated scans when q == n)
     O(q * n) - "O of q times n" (the general form behind that quadratic)
 
 Big-O counts operations as the input grows; it ignores constants and hardware.
-The legacy folder name says "Benchmark", but nothing here is timed: these are
-tiny counted illustrations, not measurements.
+Storage has a shape too: the dictionary index costs O(n) - "O of n" (Linear)
+extra space, which is the tradeoff this demonstration discusses.
 """
 
 
 def make_records(size):
-    """Create a small unique-ID fixture using explicit loops.
+    """Create a small unique-ID equipment fixture.
 
     Big-O: O(n) - "O of n" (Linear).
     One dictionary is appended per value in range(size), so the work grows
@@ -30,78 +30,91 @@ def make_records(size):
     return records
 
 
-def find_record(records, target):
-    """Return the first matching record or None, stopping at a match.
+def scan(records, queries):
+    """Collect first-match answers and small illustrative record counts.
 
-    Big-O: best case O(1) - "O of 1" (Constant) when the first record
-    matches; worst case O(n) - "O of n" (Linear) when the target is last
-    or missing. The shape depends on where the match sits, so a single
-    scan has no one answer: ask "which case?" before naming a growth.
+    Big-O: O(n^2) - "O of n squared" (Quadratic) when the number of
+    queries grows with the records (q == n): doubling n quadruples the
+    worst-case number of inspections.
+
+    Nuance: the function is really O(q * n) - "O of q times n" - q queries
+    times up to n records each. A single query is only O(n) - "O of n"
+    (Linear), and an early hit can stop after O(1) - "O of 1" inspections.
     """
-    # Walk the records from the start, one at a time.
-    for record in records:
-        if record["id"] == target:
-            return record  # First match wins; stop immediately.
-    return None  # Target absent: every record was checked.
-
-
-def scan_case(records, target):
-    """Return a first-match answer and a small illustrative inspection count.
-
-    Big-O: best case O(1) - "O of 1" (Constant); worst case O(n) -
-    "O of n" (Linear). The returned count makes the case visible: 1
-    inspection for a first-record hit, n inspections for a miss.
-    """
+    results = []
     inspected = 0
-    # Walk the records, counting each one we look at.
-    for record in records:
-        inspected += 1
-        if record["id"] == target:
-            return record, inspected  # Stop at the first match.
-    return None, inspected  # A miss inspects all n records.
+    # Outer loop: one iteration per query.
+    for query in queries:
+        found = None
+        # Inner loop: walk records from the start until the first match.
+        for record in records:
+            inspected += 1  # Count every record we look at.
+            if record["id"] == query:
+                found = record
+                break  # First match wins; stop scanning this query early.
+        # Record the match (or None when the query ID was absent).
+        results.append(found)
+    return results, inspected
 
 
-def run_demo(finder=find_record, record_builder=make_records):
-    """Show case-dependent work and distinguish fixed queries from growing queries.
+def indexed(records, queries):
+    """Build a unique-ID dictionary and collect ordered answers.
 
-    Printed counts, not wall-clock timing, reveal the shapes:
-    O(1) - "O of 1" (Constant) best case, O(n) - "O of n" (Linear) worst
-    case, and O(n^2) - "O of n squared" (Quadratic) only when the number of
-    queries grows together with the records.
+    Big-O: O(n) - "O of n" (Linear) to build the dictionary index, then an
+    expected average of O(1) - "O of 1" (Constant) per key lookup, so
+    O(q) - "O of q" (Linear) for all q queries. Total: O(n + q) -
+    "O of n plus q" (Linear in the combined input sizes).
+    Storage tradeoff: the index itself costs O(n) - "O of n" (Linear) extra
+    space and must be updated when records change. Unique IDs matter: a
+    dictionary keeps one value per key, so a duplicate ID would silently
+    overwrite an earlier record.
     """
-    print("CASE AND GROWTH RECOGNITION")
+    index = {}
+    # One pass over the records: each ID becomes a key pointing at its record.
+    for record in records:
+        index[record["id"]] = record
+    results = []
+    # One dictionary probe per query; membership and access are each
+    # expected average-case O(1) - "O of 1" (Constant).
+    for query in queries:
+        if query in index:
+            results.append(index[query])
+        else:
+            results.append(None)  # Missing IDs answer None, in query order.
+    return results
+
+
+def run_demo(index_function=indexed, record_builder=make_records):
+    """Contrast a one-off request and repeated lookups without measuring speed.
+
+    The counted operations reveal the shapes: a one-off early hit needs no
+    index at all, while repeated requests can justify an O(n) - "O of n"
+    (Linear) build that pays back with average O(1) - "O of 1" (Constant)
+    lookups. Counted work is not a measured speed winner.
+    """
+    print("WORKLOAD RECOGNITION: four equipment records")
     records = record_builder(4)
-    # Four positions of one scan: first, middle, last, and missing target.
-    for label, target in (
-        ("First match", 0),
-        ("Middle match", 1),
-        ("Last match", 3),
-        ("Missing ID", -1),
+    # Two request patterns: a single early hit, then a repeated mixed batch.
+    for label, queries in (
+        ("One early hit", [0]),
+        ("Repeated mixed requests", [0, 3, -1] * 2),
     ):
-        expected, inspections = scan_case(records, target)
-        if finder(records, target) != expected:
-            raise ValueError("The code forms disagree.")
-        print(f"{label}: {inspections} record inspections")
-    print("Best case: first match -> O(1). Worst case: last or missing -> O(n).")
-    print(
-        "Typical work depends on where requests match; it is not always the worst case."
-    )
-    print("\nWhen every query misses:")
-    # Two fixed queries stay O(n); n queries become O(n^2).
-    for size in (4, 8):
-        _, per_query = scan_case(record_builder(size), -1)
-        print(
-            f"n={size}: 2 fixed queries -> {2 * per_query}; n queries -> {size * per_query}"
-        )
-    print("Fixed q: O(n). If q grows with n: O(n^2).")
-    print(
-        "A nested loop is not automatically quadratic: ask what each loop depends on."
-    )
-    print("These are tiny illustrations, not timed measurements or a benchmark.")
+        answers, inspections = scan(records, queries)
+        if answers != index_function(records, queries):
+            raise ValueError("Lookup results disagree.")
+        print(f"\n{label}: {len(queries)} request(s)")
+        print(f"Scan: {inspections} illustrative record inspections")
+        print(f"Index: build {len(records)} entries; make {len(queries)} key lookup(s)")
+    print("\nOne early hit can be served without building an index.")
+    print("Repeated ID lookups may justify building and retaining an index.")
+    print("Building the index is O(n); one existing-index lookup is average-case O(1).")
+    print("The index requires additional storage and must reflect record changes.")
+    print("Different counted operations do not establish a measured speed winner.")
+    print("Choose for the request and reuse pattern, not a universal 'fastest' claim.")
 
 
 def main():
-    """Run this fully commented version of the case-recognition demonstration."""
+    """Run this fully commented version of the workload demonstration."""
     run_demo()
 
 
