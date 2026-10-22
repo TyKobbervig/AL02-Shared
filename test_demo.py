@@ -12,12 +12,12 @@ def self_check():
     for queries, expected, count in (([0], [records[0]], 1),
                                      ([0, 3, -1] * 2, [records[0], records[3], None] * 2, 18),
                                      ([], [], 0)):
-        assert explicit.scan(records, queries) == (expected, count)
-        assert explicit.indexed(records, queries) == compact.indexed(records, queries) == expected
-    assert explicit.scan([], [0]) == ([None], 0)
+        assert explicit.scan_lookup(records, queries) == (expected, count)
+        assert explicit.indexed_lookup(records, queries) == compact.indexed(records, queries) == expected
+    assert explicit.scan_lookup([], [0]) == ([None], 0)
     assert compact.indexed([], [0]) == [None]
     assert records == before
-    assert explicit.scan([records[0], {}], [0]) == ([records[0]], 1)
+    assert explicit.scan_lookup([records[0], {}], [0]) == ([records[0]], 1)
     for size in (0, 1, 4):
         assert explicit.make_records(size) == compact.make_records(size)
 

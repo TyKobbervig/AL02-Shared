@@ -45,6 +45,9 @@ def main():
 
     print("\nLookup for B99:")
     display_book(scan_lookup(BOOKS, "B99"))
+    
+    print("\nIndexed Lookup for empty input:")
+    display_book(indexed_lookup(index, ""))
 
 
 if __name__ == "__main__":
