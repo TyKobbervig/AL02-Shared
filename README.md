@@ -74,3 +74,11 @@ $ Thursday Tasks: $
 5. Each partner copies the complete agreed solution and supplied modules into their own class repository, adds personal README notes, and tests the copy.
 
 6. Commit and push the personal copy, then submit your own repository URL and folder path. This is one final submission, not three separate daily apps.
+
+Thursday Observations:
+
+1. One Patron Lookup (B1)
+
+Recommended approach: Scan lookup
+
+Reason: If the catalog list is already available and only one lookup is needed, scanning the list is simpler because no index needs to be built first. For a single request, the overhead of building an index is unnecessary.
