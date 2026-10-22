@@ -82,3 +82,19 @@ Thursday Observations:
 Recommended approach: Scan lookup
 
 Reason: If the catalog list is already available and only one lookup is needed, scanning the list is simpler because no index needs to be built first. For a single request, the overhead of building an index is unnecessary.
+
+## Many Repeated Catalog-ID Requests
+
+**Recommendation:** Indexed Lookup
+
+**Reason:** When many requests are expected, building an index once allows the same index to be reused for future lookups. This avoids repeatedly scanning the entire catalog.
+
+---
+
+## Index Building, Storage, and Reuse
+
+Building the index requires one pass through all catalog records, which is O(n) work.
+
+The index uses additional storage because it stores a dictionary entry for each book ID and its associated record.
+
+Reusing an existing index differs from rebuilding it each time because the setup work is performed only once. After the index has been created, many lookups can use the same index. Rebuilding the index for every request would repeat the same O(n) setup cost over and over again.
