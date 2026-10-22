@@ -60,3 +60,17 @@ A request for **B4** requires examining several records before finding a match. 
 The tests verify:
 
 - Repeated requests return
+
+$ Thursday Tasks: $ 
+
+1. Recommend an approach for a patron’s one B1 lookup when the catalog list is already available and no index has been built. Give a short reason.
+
+2. Recommend an approach for a circulation desk’s many repeated catalog-ID requests when it can retain an index. Give a short reason.
+
+3. Explain the work to build that index, its additional storage, and why reusing it differs from rebuilding it for every request. No new feature is required.
+
+4. Verify the final application and focused tests. Check that both lookup paths still return the same book details or the same absent result.
+
+5. Each partner copies the complete agreed solution and supplied modules into their own class repository, adds personal README notes, and tests the copy.
+
+6. Commit and push the personal copy, then submit your own repository URL and folder path. This is one final submission, not three separate daily apps.
